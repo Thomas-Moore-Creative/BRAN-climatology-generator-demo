@@ -16,7 +16,7 @@ import shutil
 
 def main():
     """
-    spin up cluster, concat, & write
+    spin up cluster & do the work   
     """
     logger = logging.getLogger(__name__)
     logger.info("Spinning up a dask cluster")
@@ -48,7 +48,7 @@ def main():
     #########
     #### you will need to specifiy your correct path the the `data-catalogue/config.ini` file 
     #########
-    config.read('./code/BRAN2020-intake-catalog/config.ini')
+    config.read('/g/data/es60/users/thomas_moore/code/BRAN2020-intake-catalog/config.ini')
 
     # Get the value of a variable
     catalog_path = config.get('paths', 'catalog_path')
