@@ -34,7 +34,7 @@ def main():
     # -------------- setup -------------------
     logger.info("setting up")
     write_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/'
-    var_request_list = ['salt','u','v']
+    var_request_list = ['temp']
     time_period_request_list = ['daily']
     # ----- NRI Catalog ---
     logger.info("opening BRAN2020 intake catalog")
