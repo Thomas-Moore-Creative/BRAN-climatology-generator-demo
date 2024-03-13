@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 #PBS -P es60
-#PBS -q hugmem
+#PBS -q hugemem
 #PBS -l walltime=24:00:00
 #PBS -l ncpus=48
 #PBS -l mem=1470GB
