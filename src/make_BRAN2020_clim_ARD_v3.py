@@ -1,6 +1,6 @@
 # ///////////////////////
 # make_BRAN2020_clim_ARD.py
-# 7 March 2024
+# 13 March 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -57,7 +57,7 @@ def main():
     # -------- run over variables -----
     logger.info("for loop over requested vars")
     for var in var_request_list:
-        logger.info("for loop over load EXT run on variable: "+var)
+        logger.info("variable: "+var)
         search = BRAN2020_catalog.search(variable=var,time_period=time_period_request_list)
         # load the DS
         logger.info("load DS")

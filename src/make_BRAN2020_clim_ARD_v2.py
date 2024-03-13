@@ -69,12 +69,12 @@ def main():
         # ARD - write zarr & chunk & write zarr
         logger.info(var+" ARD - start write first zarr")
         BRAN2020_ard_path = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/'
-        ard_file_ID = 'BRAN2020-daily-'+var+'-v07032024.zarr'
+        ard_file_ID = 'BRAN2020-daily-'+var+'-v14032024.zarr'
         DS.to_zarr(BRAN2020_ard_path+ard_file_ID,consolidated=True)
         logger.info(var+" ARD - finish write first zarr & start reload")
         BRAN2020 = xr.open_zarr(BRAN2020_ard_path+ard_file_ID,consolidated=True)
         logger.info(var+" ARD - CHUNK for time and WRITE zarr")
-        ard_rcTime_file_ID = 'BRAN2020-daily-'+var+'-chunk4time-v07032024.zarr'
+        ard_rcTime_file_ID = 'BRAN2020-daily-'+var+'-chunk4time-v14032024.zarr'
         if 'st_ocean' in BRAN2020.coords:
             BRAN2020_rcTime =  BRAN2020.chunk({'Time':-1,'st_ocean':-1,'xt_ocean':1,'yt_ocean':100})
         else:
