@@ -1,6 +1,6 @@
 # ///////////////////////
-# make_BRAN2020_clim_ARD.py
-# 7 March 2024
+# make_BRAN2020_base_zarr.py
+# 14 March 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -33,8 +33,8 @@ def main():
         return DS
     # -------------- setup -------------------
     logger.info("setting up")
-    write_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/'
-    var_request_list = ['temp']
+    write_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/test_14032024/'
+    var_request_list = ['eta_t','mld']
     time_period_request_list = ['daily']
     # ----- NRI Catalog ---
     logger.info("opening BRAN2020 intake catalog")
@@ -57,7 +57,7 @@ def main():
     # -------- run over variables -----
     logger.info("for loop over requested vars")
     for var in var_request_list:
-        logger.info("for loop over variable: "+var)
+        logger.info("variable: "+var)
         search = BRAN2020_catalog.search(variable=var,time_period=time_period_request_list)
         # load the DS
         logger.info("load DS")
@@ -67,23 +67,12 @@ def main():
             xarray_open_kwargs = {"chunks": {"time": 1, "st_ocean": 51, "xt_ocean": 3600, "yt_ocean": 300}}
         DS=search.to_dask(xarray_open_kwargs=xarray_open_kwargs)
         # ARD - write zarr & chunk & write zarr
-        logger.info(var+" ARD - start write first zarr")
-        BRAN2020_ard_path = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/'
+        logger.info(var+" ARD - start write base zarr")
         ard_file_ID = 'BRAN2020-daily-'+var+'-v14032024.zarr'
-        DS.to_zarr(BRAN2020_ard_path+ard_file_ID,consolidated=True)
-        logger.info(var+" ARD - finish write first zarr & start reload")
-        BRAN2020 = xr.open_zarr(BRAN2020_ard_path+ard_file_ID,consolidated=True)
-        logger.info(var+" ARD - CHUNK for time and WRITE zarr")
-        ard_rcTime_file_ID = 'BRAN2020-daily-'+var+'-chunk4time-v14032024.zarr'
-        if 'st_ocean' in BRAN2020.coords:
-            BRAN2020_rcTime =  BRAN2020.chunk({'Time':-1,'st_ocean':-1,'xt_ocean':1,'yt_ocean':100})
-        else:
-            BRAN2020_rcTime =  BRAN2020.chunk({'Time':-1,'xt_ocean':100,'yt_ocean':100})
-        BRAN2020_rcTime = remove_zarr_encoding(BRAN2020_rcTime)
-        BRAN2020_rcTime.to_zarr(BRAN2020_ard_path+ard_rcTime_file_ID,consolidated=True)
-        logger.info(var+" ARD - finished with write rechunked zarr")
+        DS.to_zarr(write_dir+ard_file_ID,consolidated=True)
+        logger.info(var+" ARD - done writing base zarr for "+var)
     # -------------
-    logger.info("all done !!!")
+    logger.info("done with base zarr for all vars")
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
