@@ -131,9 +131,9 @@ def main():
     
     
     # make objects
-        var_monthly_climatology_rc = var_monthly_climatology_rc.rename({'temp':'climatological_temp'})
-        El_Nino_var_monthly_climatology_rc = El_Nino_var_monthly_climatology_rc.rename({'temp':'El_Nino_climatological_temp'})
-        La_Nina_var_monthly_climatology_rc = La_Nina_var_monthly_climatology_rc.rename({'temp':'La_Nina_climatological_temp'})
+        var_monthly_climatology_rc = var_monthly_climatology_rc.rename({var:'climatological_'+var})
+        El_Nino_var_monthly_climatology_rc = El_Nino_var_monthly_climatology_rc.rename({var:'El_Nino_climatological_'+var})
+        La_Nina_var_monthly_climatology_rc = La_Nina_var_monthly_climatology_rc.rename({var:'La_Nina_climatological_'+var})
         BRAN2020_var_climatology = xr.merge([var_monthly_climatology_rc,El_Nino_var_monthly_climatology_rc,La_Nina_var_monthly_climatology_rc])
         BRAN2020_var_climatology_rc = BRAN2020_var_climatology.chunk({'yt_ocean':-1})
 
