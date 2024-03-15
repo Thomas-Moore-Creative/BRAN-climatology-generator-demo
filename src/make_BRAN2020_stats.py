@@ -6,13 +6,11 @@
 import logging
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-import intake
 import xarray as xr
 import pandas as pd
 import numpy as np
 import pandas as pd
-import os
-import shutil
+
 
 def main():
     """
@@ -76,7 +74,16 @@ def main():
         El_Nino_mask = El_Nino_mask.rename({'datetime':'Time'})
         sync_Time = var_chunked_time.Time
         El_Nino_mask['Time'] = sync_Time
+        
+        La_Nina_mask = ONI_DF_BRANtime['La Nina LOGICAL']
+        La_Nina_mask = La_Nina_mask.to_xarray()
+        La_Nina_mask = La_Nina_mask.rename({'datetime':'Time'})
+        sync_Time = var_chunked_time.Time
+        La_Nina_mask['Time'] = sync_Time
+
         ONI_DF_BRANtime['Neutral LOGICAL'] = (ONI_DF_BRANtime['El Nino LOGICAL'] == False) & (ONI_DF_BRANtime['La Nina LOGICAL'] == False)
+    
+    
     # mask events in both space and time chunked versions
         El_Nino_mask_0_1 = El_Nino_mask.to_dataframe().replace({True: 1, False: 0}).to_xarray()
         La_Nina_mask_0_1 = La_Nina_mask.to_dataframe().replace({True: 1, False: 0}).to_xarray()
@@ -145,18 +152,18 @@ def main():
         logger.info(var+" writing nc files")
         write_path = '/g/data/es60/users/thomas_moore/clim_demo_results/daily/test_14032024/'
     #
-        if 'st_ocean' in BRAN2020_stats.coords:
-            settings = {'chunksizes':(51,1500,360)}
-        else:
-            settings = {'chunksizes':(1500,3600)}    
-        encoding = {var: settings for var in BRAN2020_stats_rc.data_vars}
+        #if 'st_ocean' in BRAN2020_stats.coords:
+        #    settings = {'chunksizes':(51,1500,360)}
+        #else:
+        #    settings = {'chunksizes':(1500,3600)}    
+        #encoding = {var: settings for var in BRAN2020_stats_rc.data_vars}
         BRAN2020_stats_rc.to_netcdf(write_path+'BRAN2020_daily_'+var+'_stats.nc')
         logger.info(var+" finished writing stats nc file")
-        if 'st_ocean' in BRAN2020_stats.coords:
-            settings = {'chunksizes':(2,51,100,3600)}
-        else:
-            settings = {'chunksizes':(2,100,3600)}    
-        encoding = {var: settings for var in BRAN2020_quant_rc.data_vars}
+        #if 'st_ocean' in BRAN2020_stats.coords:
+        #    settings = {'chunksizes':(2,51,100,3600)}
+        #else:
+        #    settings = {'chunksizes':(2,100,3600)}    
+        #encoding = {var: settings for var in BRAN2020_quant_rc.data_vars}
         BRAN2020_quant_rc.to_netcdf(write_path+'BRAN2020_daily_'+var+'_quant.nc')
         logger.info(var+" finished stats and writing nc files")
     # -------------
