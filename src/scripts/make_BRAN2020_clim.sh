@@ -12,4 +12,4 @@
 
 conda activate pangeo_regionmask
 
-python ../make_BRAN2020_stats.py
+python ../make_BRAN2020_clim.py

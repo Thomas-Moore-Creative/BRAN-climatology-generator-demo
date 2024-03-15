@@ -1,6 +1,6 @@
 # ///////////////////////
-# make_BRAN2020_stats.py
-# 15 March 2024
+# make_BRAN2020_clim.py
+# 16 March 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -22,13 +22,22 @@ def main():
     from dask.distributed import Client
     client = Client()
     # -----------  functions ----------------------
-    
+    def get_monthly_climatology(xr_object,time_coord_name = 'time',flox=True):
+        if flox == True:
+            monthly_climatology = xr_object.groupby(time_coord_name+'.month').mean(dim=time_coord_name,keep_attrs = True,method="cohorts", engine="flox")
+        else:
+            monthly_climatology = xr_object.groupby(time_coord_name+'.month').mean(dim=time_coord_name,keep_attrs = True)
+        return monthly_climatology
+
+    def get_monthly_anomaly(xr_object,monthly_climatology, time_coord_name = 'time'):
+        monthly_anomaly = xr_object.groupby(time_coord_name+'.month') - monthly_climatology
+        return monthly_anomaly
     # -------------- setup -------------------
     logger.info("setting up")
     ARD_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/test_14032024/'
     var_request_list = ['eta_t','mld']
     # ------
-    logger.info("starting stats workflow step")
+    logger.info("starting clim workflow step")
     # -------- run over variables -----
     logger.info("for loop over requested vars")
     for var in var_request_list:
@@ -94,78 +103,49 @@ def main():
 
         El_Nino_var_chunked_time = DS_rcTime.sel({'Time':El_Nino_mask_TIMES.Time})
         La_Nina_var_chunked_time = DS_rcTime.sel({'Time':La_Nina_mask_TIMES.Time})
-    # Mean, Median, Max , Min, Std, 05 & 95 quantiles
-        El_Nino_mean = El_Nino_var_chunked_time.mean('Time')
-        El_Nino_median = El_Nino_var_chunked_time.median('Time')
-        El_Nino_max = El_Nino_var_chunked_time.max('Time')
-        El_Nino_min = El_Nino_var_chunked_time.min('Time')
-        El_Nino_std = El_Nino_var_chunked_time.std('Time')
-        El_Nino_quant = El_Nino_var_chunked_time.quantile([0.05,0.95],skipna=False,dim='Time')
-        La_Nina_mean = La_Nina_var_chunked_time.mean('Time')
-        La_Nina_median = La_Nina_var_chunked_time.median('Time')
-        La_Nina_max = La_Nina_var_chunked_time.max('Time')
-        La_Nina_min = La_Nina_var_chunked_time.min('Time')
-        La_Nina_std = La_Nina_var_chunked_time.std('Time')
-        La_Nina_quant = La_Nina_var_chunked_time.quantile([0.05,0.95],skipna=False,dim='Time')
-        mean = var_chunked_time.mean('Time')
-        median = var_chunked_time.median('Time')
-        max = var_chunked_time.max('Time')
-        min = var_chunked_time.min('Time')
-        std = var_chunked_time.std('Time')
-        quant = var_chunked_time.quantile([0.05,0.95],skipna=False,dim='Time')
-    # make objects
-        mean = mean.rename({var:'mean_'+var})
-        median = median.rename({var:'median_'+var})
-        max = max.rename({var:'max_'+var})
-        min = min.rename({var:'min_'+var})
-        std = std.rename({var:'std_'+var})
-        quant = quant.rename({var:'quantile_'+var})
-    #El_Nino_
-        El_Nino_mean = El_Nino_mean.rename({var:'El_Nino_mean_'+var})
-        El_Nino_median = El_Nino_median.rename({var:'El_Nino_median_'+var})
-        El_Nino_max = El_Nino_max.rename({var:'El_Nino_max_'+var})
-        El_Nino_min = El_Nino_min.rename({var:'El_Nino_min_'+var})
-        El_Nino_std = El_Nino_std.rename({var:'El_Nino_std_'+var})
-        El_Nino_quant = El_Nino_quant.rename({var:'El_Nino_quantile_'+var})
-    #La_Nina_
-        La_Nina_mean = La_Nina_mean.rename({var:'La_Nina_mean_'+var})
-        La_Nina_median = La_Nina_median.rename({var:'La_Nina_median_'+var})
-        La_Nina_max = La_Nina_max.rename({var:'La_Nina_max_'+var})
-        La_Nina_min = La_Nina_min.rename({var:'La_Nina_min_'+var})
-        La_Nina_std = La_Nina_std.rename({var:'La_Nina_std_'+var})
-        La_Nina_quant = La_Nina_quant.rename({var:'La_Nina_quantile_'+var})
-    #
-        BRAN2020_stats = xr.merge([mean,median,max,min,std,
-                                      El_Nino_mean,El_Nino_median,El_Nino_max,El_Nino_min,El_Nino_std,
-                                      La_Nina_mean,La_Nina_median,La_Nina_max,La_Nina_min,La_Nina_std])
-    #
-        if 'st_ocean' in BRAN2020_stats.coords:
-            BRAN2020_stats_rc = BRAN2020_stats.chunk({'st_ocean':-1,'yt_ocean':-1,'xt_ocean':360})
+
+    # Climatologies and anomalies
+        var_monthly_climatology = get_monthly_climatology(var_chunked_time, time_coord_name = 'Time')
+        if 'st_ocean' in var_monthly_climatology.coords:
+            var_monthly_climatology_rc = var_monthly_climatology.chunk({'st_ocean':10,'xt_ocean':3600,'month':1})
         else:
-            BRAN2020_stats_rc = BRAN2020_stats.chunk({'yt_ocean':-1,'xt_ocean':-1})
-    #
-        BRAN2020_quant = xr.merge([quant,
-                                      El_Nino_quant,
-                                      La_Nina_quant])
-        BRAN2020_quant_rc = BRAN2020_quant.chunk({'xt_ocean':3600})
+            var_monthly_climatology_rc = var_monthly_climatology.chunk({'xt_ocean':3600,'month':-1})
+    #El Nino
+        El_Nino_var_monthly_climatology = get_monthly_climatology(El_Nino_var_chunked_time, time_coord_name = 'Time')
+        if 'st_ocean' in var_monthly_climatology.coords:
+            El_Nino_var_monthly_climatology_rc = El_Nino_var_monthly_climatology.chunk({'st_ocean':10,'xt_ocean':3600,'month':1})
+        else:
+            El_Nino_var_monthly_climatology_rc = El_Nino_var_monthly_climatology.chunk({'xt_ocean':3600,'month':12})
+        
+    #La Nina
+        La_Nina_var_monthly_climatology = get_monthly_climatology(La_Nina_var_chunked_time, time_coord_name = 'Time')
+        if 'st_ocean' in var_monthly_climatology.coords:
+            La_Nina_var_monthly_climatology_rc = La_Nina_var_monthly_climatology.chunk({'st_ocean':10,'xt_ocean':3600,'month':1})
+        else:
+            La_Nina_var_monthly_climatology_rc = La_Nina_var_monthly_climatology.chunk({'xt_ocean':3600,'month':12})
+        
+    #anomalies turned off
+    #    var_anomaly = get_monthly_anomaly(var_chunked,var_monthly_climatology_rc,time_coord_name='Time')
+    #    El_Nino_var_anomaly = get_monthly_anomaly(El_Nino_var_chunked,El_Nino_var_monthly_climatology_rc,time_coord_name='Time')
+    #    La_Nina_var_anomaly = get_monthly_anomaly(La_Nina_var_chunked,La_Nina_var_monthly_climatology_rc,time_coord_name='Time')
+    
+    
+    # make objects
+        var_monthly_climatology_rc = var_monthly_climatology_rc.rename({'temp':'climatological_temp'})
+        El_Nino_var_monthly_climatology_rc = El_Nino_var_monthly_climatology_rc.rename({'temp':'El_Nino_climatological_temp'})
+        La_Nina_var_monthly_climatology_rc = La_Nina_var_monthly_climatology_rc.rename({'temp':'La_Nina_climatological_temp'})
+        BRAN2020_var_climatology = xr.merge([var_monthly_climatology_rc,El_Nino_var_monthly_climatology_rc,La_Nina_var_monthly_climatology_rc])
+        BRAN2020_var_climatology_rc = BRAN2020_var_climatology.chunk({'yt_ocean':-1})
+
     # write out results in NetCDF
-        logger.info(var+" writing nc files")
+        logger.info(var+" writing nc file")
         write_path = '/g/data/es60/users/thomas_moore/clim_demo_results/daily/test_14032024/'
-    #
-        #if 'st_ocean' in BRAN2020_stats.coords:
-        #    settings = {'chunksizes':(51,1500,360)}
-        #else:
-        #    settings = {'chunksizes':(1500,3600)}    
-        #encoding = {var: settings for var in BRAN2020_stats_rc.data_vars}
-        BRAN2020_stats_rc.to_netcdf(write_path+'BRAN2020_daily_'+var+'_stats.nc')
-        logger.info(var+" finished writing stats nc file")
-        #if 'st_ocean' in BRAN2020_stats.coords:
-        #    settings = {'chunksizes':(2,51,100,3600)}
-        #else:
-        #    settings = {'chunksizes':(2,100,3600)}    
-        #encoding = {var: settings for var in BRAN2020_quant_rc.data_vars}
-        BRAN2020_quant_rc.to_netcdf(write_path+'BRAN2020_daily_'+var+'_quant.nc')
-        logger.info(var+" finished stats and writing nc files")
+    
+        settings = {'chunksizes':(1,10,1500,3600)}
+        encoding = {var: settings for var in BRAN2020_var_climatology.data_vars}
+        BRAN2020_var_climatology.to_netcdf(write_path+'BRAN2020_daily_'+var+'_climatology.nc', encoding = encoding)
+
+
     # -------------
     logger.info("done with all vars")
 if __name__ == "__main__":
