@@ -140,8 +140,10 @@ def main():
     # write out results in NetCDF
         logger.info(var+" writing nc file")
         write_path = '/g/data/es60/users/thomas_moore/clim_demo_results/daily/test_14032024/'
-    
-        settings = {'chunksizes':(1,10,1500,3600)}
+        if 'st_ocean' in var_monthly_climatology.coords:
+            settings = {'chunksizes':(1,10,1500,3600)}
+        else:
+            settings = {'chunksizes':(12,1500,3600)}    
         encoding = {var: settings for var in BRAN2020_var_climatology.data_vars}
         BRAN2020_var_climatology.to_netcdf(write_path+'BRAN2020_daily_'+var+'_climatology.nc', encoding = encoding)
 
