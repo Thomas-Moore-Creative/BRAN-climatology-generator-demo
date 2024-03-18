@@ -1,6 +1,6 @@
 # ///////////////////////
 # make_BRAN2020_rechunk_zarr.py
-# 14 March 2024
+# 18 March 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -34,7 +34,7 @@ def main():
     # -------------- setup -------------------
     logger.info("setting up")
     ARD_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/test_14032024/'
-    var_request_list = ['eta_t','mld']
+    var_request_list = ['temp','salt']
     # ------
     logger.info("starting rechunking workflow")
     # -------- run over variables -----
@@ -52,8 +52,10 @@ def main():
         BRAN2020_rcTime = remove_zarr_encoding(BRAN2020_rcTime)
         BRAN2020_rcTime.to_zarr(ARD_dir+ard_rcTime_file_ID,consolidated=True)
         logger.info(var+" ARD - finished with write rechunked zarr")
+        client.restart()
     # -------------
     logger.info("done with all vars")
+    client.shutdown()
 if __name__ == "__main__":
     log_fmt = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_fmt)
