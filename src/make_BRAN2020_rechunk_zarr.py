@@ -1,6 +1,6 @@
 # ///////////////////////
 # make_BRAN2020_rechunk_zarr.py
-# 18 March 2024
+# 27 March 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -34,7 +34,7 @@ def main():
     # -------------- setup -------------------
     logger.info("setting up")
     ARD_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/test_14032024/'
-    var_request_list = ['temp','salt']
+    var_request_list = ['temp']
     # ------
     logger.info("starting rechunking workflow")
     # -------- run over variables -----
