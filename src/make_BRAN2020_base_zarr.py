@@ -1,6 +1,6 @@
 # ///////////////////////
 # make_BRAN2020_base_zarr.py
-# 14 March 2024
+# 3 April 2024
 #////////////////////////
 # --------- packages --------------
 import logging
@@ -33,7 +33,7 @@ def main():
         return DS
     # -------------- setup -------------------
     logger.info("setting up")
-    write_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/test_14032024/'
+    write_dir = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/draft_03042024/'
     var_request_list = ['salt']
     time_period_request_list = ['daily']
     # ----- NRI Catalog ---
@@ -68,7 +68,7 @@ def main():
         DS=search.to_dask(xarray_open_kwargs=xarray_open_kwargs)
         # ARD - write zarr & chunk & write zarr
         logger.info(var+" ARD - start write base zarr")
-        ard_file_ID = 'BRAN2020-daily-'+var+'-v14032024.zarr'
+        ard_file_ID = 'BRAN2020-daily-'+var+'-v03042024.zarr'
         DS.to_zarr(write_dir+ard_file_ID,consolidated=True)
         logger.info(var+" ARD - done writing base zarr for "+var)
     # -------------
