@@ -54,7 +54,7 @@ def main():
         
         input_ds = BRAN2020
         target_chunks = {'Time':-1,'st_ocean':-1,'xt_ocean':1,'yt_ocean':100}
-        max_mem = "8GB"
+        max_mem = "2GB"
         target_store = ARD_dir+ard_rcTime_file_ID
         temp_store = "/scratch/es60/ard/rechunker_scratch/rechunker-tmp.zarr"
 

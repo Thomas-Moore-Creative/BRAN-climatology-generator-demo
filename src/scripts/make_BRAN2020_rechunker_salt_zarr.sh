@@ -3,7 +3,7 @@
 #PBS -P es60
 #PBS -q megamem
 #PBS -l walltime=24:00:00
-#PBS -l ncpus=96
+#PBS -l ncpus=48
 #PBS -l mem=2990GB
 #PBS -l jobfs=1400GB
 #PBS -l wd
