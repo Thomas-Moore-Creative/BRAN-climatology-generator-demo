@@ -28,7 +28,7 @@ def main():
 
     with dask.config.set({"distributed.scheduler.worker-saturation": 1.0,
                       "distributed.nanny.pre-spawn-environ.MALLOC_TRIM_THRESHOLD_": 0,
-                      'logging.distributed': 'error'}):
+                      'logging.distributed':'error'}):
         client = distributed.Client()
     # -----------  functions ----------------------
     def remove_zarr_encoding(DS):
