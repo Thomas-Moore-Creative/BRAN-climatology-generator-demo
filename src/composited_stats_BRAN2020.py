@@ -71,8 +71,8 @@ def main():
     ### run var on what variable
 
     #var_name = 'temp'
-    #var_name = 'mld'
-    var_name = 'eta_t'
+    var_name = 'mld'
+    #var_name = 'eta_t'
     print("run variable: "+var_name)
 
     # Write log file
