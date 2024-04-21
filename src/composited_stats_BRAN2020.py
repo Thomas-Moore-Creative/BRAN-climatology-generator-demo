@@ -3,8 +3,6 @@
 # 18 April 2024
 #////////////////////////
 # --------- packages --------------
-import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
 import xarray as xr
 import pandas as pd
 import numpy as np
@@ -27,9 +25,9 @@ def main():
                       "distributed.nanny.pre-spawn-environ.MALLOC_TRIM_THRESHOLD_": 0,
                     "logging.distributed": "error"}):
         # megamem settings
-        # cluster = LocalCluster(n_workers=12,threads_per_worker=1,memory_limit='200GB')
+        cluster = LocalCluster(n_workers=12,threads_per_worker=1,memory_limit='200GB')
         # hugemem settings
-        cluster = LocalCluster(n_workers=12,threads_per_worker=1,memory_limit='100GB')
+        #cluster = LocalCluster(n_workers=12,threads_per_worker=1,memory_limit='100GB')
         client = Client(cluster)
         print(client)
     ### masks for ENSO composites
