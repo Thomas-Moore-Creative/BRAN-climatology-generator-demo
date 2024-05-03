@@ -17,7 +17,15 @@ import numbagg
 
 
 # Function definitions
-def mean_monthclim_flox(ds,var_name,time_dim='time',method_str='cohorts',skipna_flag=False):
+def print_chunks(data_array):
+    chunks = data_array.chunks
+    dim_names = data_array.dims
+    readable_chunks = {dim: chunks[i] for i, dim in enumerate(dim_names)}
+    for dim, sizes in readable_chunks.items():
+        print(f"{dim} chunks: {sizes}")
+    return readable_chunks
+
+def stats_monthclim(ds,var_name,time_dim='time',method_str='cohorts',skipna_flag=False):
     """
     currently written for single variable datasets
     """
