@@ -14,4 +14,4 @@
 
 conda activate pangeo_bran2020_demo
 
-python -u ../BRAN2020_stats.py > ./logs/$PBS_JOBID-megamem-3D-salt-stats.log 2>&1
+python -u ../BRAN2020_stats.py > ./logs/$PBS_JOBID-megamem-3D-u-stats.log 2>&1
