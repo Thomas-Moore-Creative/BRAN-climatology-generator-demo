@@ -1,7 +1,7 @@
 
-# bran2020_stats.py
+# bran2020_demo_functions.py
 """
-Module Name: bran2020_stats.py
+Module Name: bran2020_demo_functions.py
 Description: This module provides statistical functions for analyzing BRAN2020 data.
 Author: 
 Date: 3 May 2024
