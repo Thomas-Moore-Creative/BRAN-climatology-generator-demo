@@ -42,15 +42,16 @@ def main():
     BRAN2020_catalog = intake.open_esm_datastore(catalog_path+'BRAN2020.json',columns_with_iterables=['variable'])
     var_request_list = ['temp']
     var = var_request_list[0]
+    print("variable requested: "+var)
     time_period_request_list = ['daily']
     search = BRAN2020_catalog.search(variable=var,time_period=time_period_request_list)
     xarray_open_kwargs = {"chunks": {"Time": -1,'st_ocean':10}}
     DS=search.to_dask(xarray_open_kwargs=xarray_open_kwargs)
+    bran2020_stats.print_chunks(DS[var])
     # stats_monthclim(ds,var_name,time_dim='time',method_str='cohorts',skipna_flag=False)
     stats_monthclim_ds = bran2020_stats.stats_monthclim(DS,var_name=var,time_dim='Time',skipna_flag=False,method_str='cohorts')
     print(stats_monthclim_ds.nbytes/1e9)
-    bran2020_stats.print_chunks(stats_monthclim_ds[var])
-
+    # write to netcdf
     results_path = '/g/data/es60/users/thomas_moore/clim_demo_results/daily/draft_delivery/'
     results_file = 'BRAN2020_stats_monthclim_'+var+'.nc'
 
