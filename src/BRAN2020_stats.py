@@ -40,7 +40,7 @@ def main():
     catalog_path = config.get('paths', 'catalog_path')
     #
     BRAN2020_catalog = intake.open_esm_datastore(catalog_path+'BRAN2020.json',columns_with_iterables=['variable'])
-    var_request_list = ['u']
+    var_request_list = ['v']
     var = var_request_list[0]
     print("variable requested: "+var)
     time_period_request_list = ['daily']
