@@ -140,7 +140,7 @@ def remove_zarr_encoding(DS):
         DS[coord].encoding = {}
     return DS
 
-def rechunk_each_st_ocean(ds, level_index,chunking_dict):
+def rechunk_each_st_ocean(ds, level_index,chunking_dict,base_write_dir):
     # Select the specific level
     ds_level = ds.isel(st_ocean=level_index)
 
@@ -155,16 +155,16 @@ def rechunk_each_st_ocean(ds, level_index,chunking_dict):
     print_chunks(ds_level_rechunked.temp)
 
     # Save or return the result
-    workspace = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/'
+    workspace = base_write_dir+var+'/'
     encoding_values = tuple(chunking_dict.values())
     encoding = {'temp':{'chunks':encoding_values}}
     print('encoding: '+ str(encoding))
-    ds_level_rechunked.to_zarr(workspace+f'st_ocean_{level_index}_rechunked.zarr',mode='w', encoding=encoding, consolidated=True)
+    ds_level_rechunked.to_zarr(workspace+f'st_ocean_{level_index}_'+var+'_rechunked.zarr',mode='w', encoding=encoding, consolidated=True)
     print('depth index: ',level_index,' FINISH <<< ')
     
     
     
-def concatinate_st_ocean_zarrs(zarr_dir_path = '/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/'):
+def concatinate_st_ocean_zarrs(zarr_dir_path):
     # Assuming all Zarr directories are in the same folder
     zarr_stores = [os.path.join(zarr_dir_path, d) for d in os.listdir(zarr_dir_path) if os.path.isdir(os.path.join(zarr_dir_path, d))]
 
