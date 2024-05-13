@@ -36,8 +36,8 @@ def main():
     print("variable requested: "+var)
     BRAN2020_ard_path = config['BRAN2020_ard_path']
     print("BRAN2020_ard_path: "+BRAN2020_ard_path)
-    base_write_dir = config['base_write_dir']
-    print("zarr_workdir_base_path: "+base_write_dir)
+    write_rechunk_base_dir = config['write_rechunk_base_dir']
+    print("write_rechunk_base_dir: "+write_rechunk_base_dir)
     n_workers = config['n_workers']
     print("n_workers: "+str(n_workers))
     threads_per_worker = config['threads_per_worker']
@@ -46,6 +46,8 @@ def main():
     print("memory_limit: "+memory_limit)
     create_base_zarr = config['create_base_zarr']
     print("create_base_zarr: "+str(create_base_zarr))
+    read_base_zarr_path = config['read_base_zarr_path']
+    print("read_base_zarr_path: "+read_base_zarr_path)
     run_rechunker_loop = config['run_rechunker_loop']
     print("run_rechunker_loop: "+str(run_rechunker_loop))
     level_start = config['level_start']
@@ -54,6 +56,10 @@ def main():
     print("level_stop: "+str(level_stop))
     concatinate_st_ocean_zarrs = config['concatinate_st_ocean_zarrs']
     print("concatinate_st_ocean_zarrs: "+str(concatinate_st_ocean_zarrs))
+    lat_name = config['lat_name']
+    print("lat_name: "+lat_name)
+    lon_name = config['lon_name']
+    print("lon_name: "+lon_name)
 
     # -----------  cluster -----------------------
     print(">>> Spinning up a dask cluster...")
@@ -71,43 +77,47 @@ def main():
     # Format as a string
     timestamp_str = now.strftime("%Y.%m.%d.%H.%M.%S")
     print('timestamp: '+timestamp_str)
+    # base zarr settings
+    xarray_open_kwargs = {"Time": 1, "st_ocean": 51, lon_name: 3600, lat_name: 1500}
+    chunking_string = 'chunks_' + ''.join(str(key) + str(value)+ '.' for key, value in xarray_open_kwargs.items())
+    ard_rcTime_file_ID = 'BRAN2020-'+var+'-'+chunking_string+timestamp_str+'.zarr'
+    print(">>> ard_rcTime_file_ID: "+ard_rcTime_file_ID)
 
     if create_base_zarr == True:
         # write base zarr
         print(">>> writing base zarr for: "+var)
 
         # load the netcdf and write the base zarr
-        xarray_open_kwargs = {"Time": 1, "st_ocean": 51, "xt_ocean": 3600, "yt_ocean": 1500}
+        vars_to_keep=['temp','Time','st_ocean',lat_name,lon_name]
         ds = xr.open_mfdataset('/g/data/gb6/BRAN/BRAN2020/daily/ocean_'+var+'_*.nc',
-                       parallel=True,chunks=xarray_open_kwargs,preprocess=keep_only_selected_vars)
+                       parallel=True,chunks=xarray_open_kwargs,preprocess=keep_only_selected_vars(vars_to_keep=vars_to_keep))
         ds
-
-        chunking_string = 'chunks_' + ''.join(str(key) + str(value)+ '.' for key, value in xarray_open_kwargs.items())
-        ard_rcTime_file_ID = 'BRAN2020-'+var+'-'+chunking_string+timestamp_str+'.zarr'
-        print(">>> ard_rcTime_file_ID: "+ard_rcTime_file_ID)
         ds32 = ds
         ds32[var] = ds32[var].astype(np.float32)
         ds32.to_zarr(BRAN2020_ard_path+ard_rcTime_file_ID,consolidated=True)
         print(">>> finished writing base zarr for: "+var)
     else:
         print(">>> skipping writing base zarr for: "+var)
+        ard_rcTime_file_ID = read_base_zarr_path
     if run_rechunker_loop == True:
         print(">>> running rechunker loop for: "+var)
         # load the base zarr
-        DS = xr.open_zarr(BRAN2020_ard_path+ard_rcTime_file_ID,consolidated=True)
+        DS = xr.open_zarr(ard_rcTime_file_ID,consolidated=True)
         print(DS)
         readable_chunks = print_chunks(DS[var])
-        chunking_dict_per_depth = {"Time": 11322, "xt_ocean": 120, "yt_ocean": 120}
+        chunking_dict_per_depth = {"Time": 11322, lon_name: 120, lat_name: 120}
         print("chunking_dict_per_depth: "+str(chunking_dict_per_depth))
         # Iterate over each depth and process
-        for depth_index in range(0,51):
-            rechunk_each_st_ocean(DS, depth_index,chunking_dict=chunking_dict_per_depth,base_write_dir=base_write_dir)
+        for depth_index in range(level_start,level_stop):
+            rechunk_each_st_ocean(DS, depth_index,chunking_dict=chunking_dict_per_depth,base_write_dir=write_rechunk_base_dir,var=var)
             print("finished depth_index: "+str(depth_index))
         # Concatenate the rechunked Zarrs
         print("finished rechunking all depths to 2D zarr")
     if concatinate_st_ocean_zarrs == True:
         print(">>> concatinating zarrs")
-        concatinate_st_ocean_zarrs(zarr_dir_path=base_write_dir)
+        zarr_dir_path = write_rechunk_base_dir+var
+        print("zarr_dir_path: "+zarr_dir_path)
+        concatinate_st_ocean_zarrs(zarr_dir_path=zarr_dir_path)
         print("finished concatinating zarrs")
     client.shutdown()
 if __name__ == "__main__":

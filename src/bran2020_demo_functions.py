@@ -140,7 +140,7 @@ def remove_zarr_encoding(DS):
         DS[coord].encoding = {}
     return DS
 
-def rechunk_each_st_ocean(ds, level_index,chunking_dict,base_write_dir):
+def rechunk_each_st_ocean(ds, level_index,chunking_dict,base_write_dir,var):
     # Select the specific level
     ds_level = ds.isel(st_ocean=level_index)
 
