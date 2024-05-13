@@ -1,0 +1,8 @@
+{
+    "variable": "temp",
+    "BRAN2020_ard_path": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/",
+    "zarr_workdir_base_path": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/",
+    "n_workers": 48,
+    "threads_per_worker": 1,
+    "memory_limit": "50GB"
+}
