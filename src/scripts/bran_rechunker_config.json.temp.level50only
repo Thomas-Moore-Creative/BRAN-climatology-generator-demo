@@ -1,0 +1,16 @@
+{
+    "variable": "temp",
+    "BRAN2020_ard_path": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/",
+    "read_base_zarr_path": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/BRAN2020-temp-chunks_Time1.st_ocean51.xt_ocean3600.yt_ocean1500.2024.05.12.19.11.26.zarr",
+    "write_rechunk_base_dir": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/",
+    "n_workers": 48,
+    "threads_per_worker": 1,
+    "memory_limit": "50GB",
+    "create_base_zarr": false,
+    "run_rechunker_loop": true,
+    "level_start": 50,
+    "level_stop": 51,
+    "concatinate_st_ocean_zarrs": false,
+    "lat_name": "yt_ocean",
+    "lon_name": "xt_ocean"
+}
