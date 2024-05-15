@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#PBS -P es60
+#PBS -P v19
 #PBS -q megamem
 #PBS -l walltime=48:00:00
 #PBS -l ncpus=48

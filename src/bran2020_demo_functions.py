@@ -118,7 +118,9 @@ def version_table(packages = None ):
     # Print the table using tabulate
     print(tabulate(multi_column_table, headers=headers, tablefmt='grid'))
 
-def keep_only_selected_vars(ds, vars_to_keep=['temp','Time','st_ocean','yt_ocean','xt_ocean']):
+def keep_only_selected_vars(ds, vars_to_keep=None):
+    if vars_to_keep is None:
+        vars_to_keep = ['temp','Time','st_ocean','yt_ocean','xt_ocean']
     # Calculate which variables to drop by finding the difference
     # between all variables in the dataset and the ones you want to keep
     vars_to_drop = set(ds.variables) - set(vars_to_keep)
@@ -152,12 +154,12 @@ def rechunk_each_st_ocean(ds, level_index,chunking_dict,base_write_dir,var):
     ds_level_rechunked = remove_zarr_encoding(ds_level_rechunked)
     print(ds_level_rechunked)
     print(ds_level_rechunked.encoding)
-    print_chunks(ds_level_rechunked.temp)
+    print_chunks(ds_level_rechunked[var])
 
     # Save or return the result
     workspace = base_write_dir+var+'/'
     encoding_values = tuple(chunking_dict.values())
-    encoding = {'temp':{'chunks':encoding_values}}
+    encoding = {var:{'chunks':encoding_values}}
     print('encoding: '+ str(encoding))
     ds_level_rechunked.to_zarr(workspace+f'st_ocean_{level_index}_'+var+'_rechunked.zarr',mode='w', encoding=encoding, consolidated=True)
     print('depth index: ',level_index,' FINISH <<< ')

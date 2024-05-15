@@ -88,9 +88,10 @@ def main():
         print(">>> writing base zarr for: "+var)
 
         # load the netcdf and write the base zarr
-        vars_to_keep=['temp','Time','st_ocean',lat_name,lon_name]
+        vars_to_keep=[var,'Time','st_ocean',lat_name,lon_name]
         ds = xr.open_mfdataset('/g/data/gb6/BRAN/BRAN2020/daily/ocean_'+var+'_*.nc',
-                       parallel=True,chunks=xarray_open_kwargs,preprocess=keep_only_selected_vars(vars_to_keep=vars_to_keep))
+                       parallel=True,chunks=xarray_open_kwargs,
+                       preprocess=lambda ds: keep_only_selected_vars(ds, vars_to_keep=vars_to_keep))
         ds
         ds32 = ds
         ds32[var] = ds32[var].astype(np.float32)
