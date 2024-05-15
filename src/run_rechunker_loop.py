@@ -46,8 +46,8 @@ def main():
     print("memory_limit: "+memory_limit)
     create_base_zarr = config['create_base_zarr']
     print("create_base_zarr: "+str(create_base_zarr))
-    read_base_zarr_path = config['read_base_zarr_path']
-    print("read_base_zarr_path: "+read_base_zarr_path)
+    read_base_zarr_file = config['read_base_zarr_file']
+    print("read_base_zarr_file: "+read_base_zarr_file)
     run_rechunker_loop = config['run_rechunker_loop']
     print("run_rechunker_loop: "+str(run_rechunker_loop))
     level_start = config['level_start']
@@ -99,11 +99,11 @@ def main():
         print(">>> finished writing base zarr for: "+var)
     else:
         print(">>> skipping writing base zarr for: "+var)
-        ard_rcTime_file_ID = read_base_zarr_path
+        ard_rcTime_file_ID = read_base_zarr_file
     if run_rechunker_loop == True:
         print(">>> running rechunker loop for: "+var)
         # load the base zarr
-        DS = xr.open_zarr(ard_rcTime_file_ID,consolidated=True)
+        DS = xr.open_zarr(BRAN2020_ard_path+ard_rcTime_file_ID,consolidated=True)
         print(DS)
         readable_chunks = print_chunks(DS[var])
         chunking_dict_per_depth = {"Time": 11322, lon_name: 120, lat_name: 120}
