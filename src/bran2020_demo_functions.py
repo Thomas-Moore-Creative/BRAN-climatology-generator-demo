@@ -206,3 +206,7 @@ def clear_and_restart(variables, client):
 def load_rechunker_config():
     with open('bran_rechunker_config.json', 'r') as file:
         return json.load(file)
+    
+def load_stats_config():
+    with open('/g/data/es60/users/thomas_moore/code/Climatology-generator-demo/src/scripts/bran_stats_config.json', 'r') as file:
+        return json.load(file)

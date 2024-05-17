@@ -1,0 +1,39 @@
+{
+    "variable": "salt",
+    "zarr_path_dict": {
+        "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
+        "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
+        "u": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/u/u_combined_output.zarr",
+        "v": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/v/v_combined_output.zarr",
+        "mld": "None",
+        "eta_t": "None"
+    },
+    "write_results_base_dir": "/g/data/es60/users/thomas_moore/clim_demo_results/daily/draft_delivery/",
+    "n_workers": 48,
+    "threads_per_worker": 1,
+    "memory_limit": "60GB",
+    "run_base_stats": true,
+    "run_quant": true,
+    "run_all_time": true,
+    "run_neutral": false,
+    "run_la_nina": false,
+    "run_el_nino": false,
+    "lat_name_dict": {
+        "temp": "yt_ocean",
+        "salt": "yt_ocean",
+        "u": "yu_ocean",
+        "v": "yu_ocean",
+        "mld": "yt_ocean",
+        "eta_t": "yt_ocean"
+    },
+    "lon_name_dict": {
+        "temp": "xt_ocean",
+        "salt": "xt_ocean",
+        "u": "xu_ocean",
+        "v": "xu_ocean",
+        "mld": "xt_ocean",
+        "eta_t": "xt_ocean"
+    },
+    "time_name": "Time"
+
+}
