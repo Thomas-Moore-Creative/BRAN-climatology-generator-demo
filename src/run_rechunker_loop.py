@@ -54,8 +54,8 @@ def main():
     print("level_start: "+str(level_start))
     level_stop = config['level_stop']
     print("level_stop: "+str(level_stop))
-    concatinate_st_ocean_zarrs = config['concatinate_st_ocean_zarrs']
-    print("concatinate_st_ocean_zarrs: "+str(concatinate_st_ocean_zarrs))
+    concatinate_st_ocean_zarrs_bool = config['concatinate_st_ocean_zarrs_bool']
+    print("concatinate_st_ocean_zarrs_bool: "+str(concatinate_st_ocean_zarrs_bool))
     lat_name = config['lat_name']
     print("lat_name: "+lat_name)
     lon_name = config['lon_name']
@@ -114,12 +114,12 @@ def main():
             print("finished depth_index: "+str(depth_index))
         # Concatenate the rechunked Zarrs
         print("finished rechunking all depths to 2D zarr")
-    if concatinate_st_ocean_zarrs == True:
-        print(">>> concatinating zarrs")
+    if concatinate_st_ocean_zarrs_bool == True:
+        print(">>> concatinating zarrs: "+datetime.now().strftime("%Y.%m.%d.%H.%M.%S"))
         zarr_dir_path = write_rechunk_base_dir+var
         print("zarr_dir_path: "+zarr_dir_path)
-        concatinate_st_ocean_zarrs(zarr_dir_path=zarr_dir_path)
-        print("finished concatinating zarrs")
+        concatinate_st_ocean_zarrs(zarr_dir_path=zarr_dir_path,var=var)
+        print("finished concatinating zarrs: "+datetime.now().strftime("%Y.%m.%d.%H.%M.%S"))
     client.shutdown()
 if __name__ == "__main__":
     main()

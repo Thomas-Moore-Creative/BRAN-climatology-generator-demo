@@ -166,8 +166,8 @@ def rechunk_each_st_ocean(ds, level_index,chunking_dict,base_write_dir,var):
     
     
     
-def concatinate_st_ocean_zarrs(zarr_dir_path):
-    # Assuming all Zarr directories are in the same folder
+def concatinate_st_ocean_zarrs(zarr_dir_path,var):
+    # Assuming all Zarr collections are in the same folder
     zarr_stores = [os.path.join(zarr_dir_path, d) for d in os.listdir(zarr_dir_path) if os.path.isdir(os.path.join(zarr_dir_path, d))]
 
     # Load all Zarr stores as a list of xarray datasets
@@ -175,9 +175,10 @@ def concatinate_st_ocean_zarrs(zarr_dir_path):
 
     # Concatenate all datasets along the level dimension
     all_depths_ds = xr.concat(datasets, dim='st_ocean')
+    all_depths_ds = all_depths_ds.sortby('st_ocean')
 
     # Save the combined dataset to a new Zarr store
-    all_depths_ds.to_zarr(zarr_dir_path+'combined_output.zarr', consolidated=True)
+    all_depths_ds.to_zarr(zarr_dir_path+'/'+var+'_combined_output.zarr', consolidated=True)
 
 def clear_and_restart(variables, client):
     """
