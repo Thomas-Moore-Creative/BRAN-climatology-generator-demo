@@ -1,5 +1,5 @@
 {
-    "variable": "v",
+    "variable": "temp",
     "zarr_path_dict": {
         "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
         "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
@@ -14,8 +14,8 @@
     "memory_limit": "60GB",
     "run_base_stats": true,
     "run_quant": true,
-    "run_all_time": true,
-    "run_neutral": false,
+    "run_all_time": false,
+    "run_neutral": true,
     "run_la_nina": false,
     "run_el_nino": false,
     "lat_name_dict": {

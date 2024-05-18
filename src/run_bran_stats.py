@@ -135,6 +135,18 @@ def main():
             quantile_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
             print("quant netcdf written: "+var)
             print(">>>>> DONE with quant stats calc and write to netcdf for: "+var)
+    if run_neutral == True or run_la_nina == True or run_el_nino == True:
+        # build ENSO phase masks
+        print(">>> building ENSO phase masks ...")
+        
+
+
+
+
+
+
+
+
     print(">>> all done ...")
 
 if __name__ == "__main__":
