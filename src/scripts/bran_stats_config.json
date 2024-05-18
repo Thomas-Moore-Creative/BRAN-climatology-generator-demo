@@ -16,8 +16,8 @@
     "run_quant": true,
     "run_all_time": false,
     "run_neutral": true,
-    "run_la_nina": false,
-    "run_el_nino": false,
+    "run_la_nina": true,
+    "run_el_nino": true,
     "lat_name_dict": {
         "temp": "yt_ocean",
         "salt": "yt_ocean",
