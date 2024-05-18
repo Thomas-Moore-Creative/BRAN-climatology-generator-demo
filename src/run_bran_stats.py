@@ -86,7 +86,7 @@ def main():
             print(stats_monthclim_ds.nbytes/1e9)
             # write to netcdf
             results_path = write_results_base_dir
-            results_file = 'BRAN2020_base_stats_'+var+'_'+timestamp_str+'.nc'
+            results_file = 'BRAN2020_base_stats_'+var+'_alltime_'+timestamp_str+'.nc'
 
             print("writing to the base stats netcdf file for : "+var+" ....")
 
@@ -120,7 +120,7 @@ def main():
                 quantile_monthclim_ds[data_var] = quantile_monthclim_ds[data_var].astype('float32')
             # write to netcdf
             results_path = write_results_base_dir
-            results_file = 'BRAN2020_quantile_stats_'+var+'_'+timestamp_str+'.nc'
+            results_file = 'BRAN2020_quantile_stats_'+var+'_alltime_'+timestamp_str+'.nc'
             print("writing to the quant netcdf file for : "+var+" ....")
             
             # Specify chunks
