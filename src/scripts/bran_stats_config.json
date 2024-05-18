@@ -1,5 +1,5 @@
 {
-    "variable": "salt",
+    "variable": "v",
     "zarr_path_dict": {
         "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
         "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
