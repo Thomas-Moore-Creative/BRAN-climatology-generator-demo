@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
-#PBS -P es60
+#PBS -P v19
 #PBS -q megamem
-#PBS -l walltime=48:00:00
+#PBS -l walltime=12:00:00
 #PBS -l ncpus=48
 #PBS -l mem=2990GB
 #PBS -l jobfs=1400GB
@@ -14,4 +14,4 @@
 
 conda activate pangeo_bran2020_demo
 
-python -u ../run_bran_stats.py > ./logs/$PBS_JOBID-run-bran-stats.log 2>&1
+python -u ../run_bran_stats.py > ./logs/$PBS_JOBID-run-bran-v-quant-elnino.log 2>&1

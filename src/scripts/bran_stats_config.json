@@ -1,5 +1,5 @@
 {
-    "variable": "temp",
+    "variable": "v",
     "zarr_path_dict": {
         "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
         "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
@@ -12,11 +12,11 @@
     "n_workers": 48,
     "threads_per_worker": 1,
     "memory_limit": "60GB",
-    "run_base_stats": true,
+    "run_base_stats": false,
     "run_quant": true,
     "run_all_time": false,
-    "run_neutral": true,
-    "run_la_nina": true,
+    "run_neutral": false,
+    "run_la_nina": false,
     "run_el_nino": true,
     "lat_name_dict": {
         "temp": "yt_ocean",
