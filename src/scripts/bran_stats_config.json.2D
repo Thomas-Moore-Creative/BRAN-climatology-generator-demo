@@ -1,14 +1,14 @@
 {
-    "variable": "eta_t",
+    "variable": "mld",
     "zarr_path_dict": {
         "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
         "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
         "u": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/u/u_combined_output.zarr",
         "v": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/v/v_combined_output.zarr",
-        "mld": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/BRAN2020-daily-mld.chunks.Time-1.xt_ocean30.yt_ocean30.2024.05.20.11.39.46.zarr",
-        "eta_t": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/BRAN2020-daily-eta_t.chunks.Time-1.xt_ocean30.yt_ocean30.2024.05.20.11.49.05.zarr"
+        "mld": "None",
+        "eta_t": "None"
     },
-    "write_results_base_dir": "/g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_intermediate_results/",
+    "write_results_base_dir": "/g/data/es60/users/thomas_moore/clim_demo_results/daily/draft_delivery/",
     "n_workers": 48,
     "threads_per_worker": 1,
     "memory_limit": "60GB",

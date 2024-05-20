@@ -84,8 +84,14 @@ def main():
             #
             lat_name = lat_name_dict[var]
             lon_name = lon_name_dict[var]
-            vars_to_keep=[var,time_name,'st_ocean',lat_name,lon_name]
-            xarray_open_kwargs = {'chunks': {time_name: -1,'st_ocean':10}}
+            if var == 'mld' or var == 'eta_t':
+                vars_to_keep=[var,time_name,lat_name,lon_name]
+                xarray_open_kwargs = {'chunks': {time_name: -1}}
+                print(">>> 2D only - no st_ocean coordinate")
+            else:
+                vars_to_keep=[var,time_name,'st_ocean',lat_name,lon_name]
+                xarray_open_kwargs = {'chunks': {time_name: -1,'st_ocean':10}}
+            #
             ds = xr.open_mfdataset('/g/data/gb6/BRAN/BRAN2020/daily/ocean_'+var+'_*.nc',
                         parallel=True,chunks=xarray_open_kwargs['chunks'],
                         preprocess=lambda ds: keep_only_selected_vars(ds, vars_to_keep=vars_to_keep))
@@ -99,12 +105,18 @@ def main():
             print("writing to the base stats netcdf file for : "+var+" ....")
 
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
-
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in stats_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
             # Save to NetCDF with chunking and encoding
             stats_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
 
@@ -116,9 +128,10 @@ def main():
             lat_name = lat_name_dict[var]
             lon_name = lon_name_dict[var]
             ds = xr.open_zarr(zarr_path_dict[var],consolidated=True)
-            ds = ds.sortby('st_ocean')
-            print(">>> sorted depths")
-            print(ds.st_ocean.values)
+            if var != 'mld' and var != 'eta_t':
+                ds = ds.sortby('st_ocean')
+                print(">>> sorted depths")
+                print(ds.st_ocean.values)
             print(">>>> chunks going into quant calculation")
             print_chunks(ds[var])
             quantile_monthclim_ds = quantile_monthclim(ds,var_name=var,time_dim=time_name,skipna_flag=False)
@@ -132,12 +145,19 @@ def main():
             print("writing to the quant netcdf file for : "+var+" ....")
             
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in quantile_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
 
             # Save to NetCDF with chunking and encoding
             quantile_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
@@ -181,9 +201,10 @@ def main():
         print(">>> loading zarr collection for ..."+var)
 
         ds = xr.open_zarr(zarr_path_dict[var],consolidated=True)
-        ds = ds.sortby('st_ocean')
-        print(">>> sorted depths")
-        print(ds.st_ocean.values)
+        if var != 'mld' and var != 'eta_t':
+            ds = ds.sortby('st_ocean')
+            print(">>> sorted depths")
+            print(ds.st_ocean.values)
         print(">>>> chunks going into quant calculation")
         print_chunks(ds[var])
 
@@ -229,12 +250,19 @@ def main():
             print("writing to the base stats netcdf file for neutral phase: "+var+" ....")
 
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in stats_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
             # Save to NetCDF with chunking and encoding
             stats_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
 
@@ -256,12 +284,19 @@ def main():
             print("writing to the quant netcdf file for neutral: "+var+" ....")
             
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in quantile_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
 
             # Save to NetCDF with chunking and encoding
             quantile_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
@@ -284,12 +319,19 @@ def main():
             print("writing to the base stats netcdf file for la_nina phase: "+var+" ....")
 
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in stats_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
             # Save to NetCDF with chunking and encoding
             stats_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
 
@@ -311,12 +353,19 @@ def main():
             print("writing to the quant netcdf file for la_nina: "+var+" ....")
             
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in quantile_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
 
             # Save to NetCDF with chunking and encoding
             quantile_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
@@ -339,12 +388,19 @@ def main():
             print("writing to the base stats netcdf file for el_nino phase: "+var+" ....")
 
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in stats_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
             # Save to NetCDF with chunking and encoding
             stats_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)
 
@@ -366,12 +422,19 @@ def main():
             print("writing to the quant netcdf file for el_nino: "+var+" ....")
             
             # Specify chunks
-            chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
+            if var == 'mld' or var == 'eta_t':
+                chunks = {'month': 12, lat_name:1500, lon_name:3600}
+            else:
+                chunks = {'month':12,'st_ocean': 1, lat_name:1500, lon_name:3600}
 
             # Specify encoding
             encoding = {}
+            if var == 'mld' or var == 'eta_t':
+                chunksizes_tuple = (12, 1500, 3600)
+            else:
+                chunksizes_tuple = (12, 1, 1500, 3600)
             for var_name in quantile_monthclim_ds.data_vars:
-                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': (12, 1, 1500, 3600)}
+                encoding[var_name] = {'zlib': True, 'complevel': 5, 'dtype': 'float32', 'chunksizes': chunksizes_tuple}
 
             # Save to NetCDF with chunking and encoding
             quantile_monthclim_ds.chunk(chunks).to_netcdf(results_path+results_file, engine='netcdf4',encoding=encoding)

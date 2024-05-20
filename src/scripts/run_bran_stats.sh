@@ -14,4 +14,4 @@
 
 conda activate pangeo_bran2020_demo
 
-python -u ../run_bran_stats.py > ./logs/$PBS_JOBID-run-bran-v-quant-elnino.log 2>&1
+python -u ../run_bran_stats.py > ./logs/$PBS_JOBID-run-bran-eta_t.log 2>&1
