@@ -222,7 +222,7 @@ def main():
         La_Nina_mask['Time'] = sync_Time
         #
         ONI_DF_BRANtime['Neutral LOGICAL'] = (ONI_DF_BRANtime['El Nino LOGICAL'] == False) & (ONI_DF_BRANtime['La Nina LOGICAL'] == False)
-        neutral_mask = ONI_DF_BRANtime['La Nina LOGICAL']
+        neutral_mask = ONI_DF_BRANtime['Neutral LOGICAL']
         neutral_mask = neutral_mask.to_xarray()
         neutral_mask = neutral_mask.rename({'datetime':'Time'})
         sync_Time = ds.Time
