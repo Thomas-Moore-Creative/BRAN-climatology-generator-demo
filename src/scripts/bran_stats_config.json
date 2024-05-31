@@ -1,5 +1,5 @@
 {
-    "variable": "mld",
+    "variable": "v",
     "zarr_path_dict": {
         "temp": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/temp/temp_combined_output.zarr",
         "salt": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/looped_rechunk_output/salt/salt_combined_output.zarr",
@@ -8,15 +8,15 @@
         "mld": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/BRAN2020-daily-mld.chunks.Time-1.xt_ocean30.yt_ocean30.2024.05.20.11.39.46.zarr",
         "eta_t": "/scratch/es60/ard/reanalysis/BRAN2020/ARD/BRAN2020-daily-eta_t.chunks.Time-1.xt_ocean30.yt_ocean30.2024.05.20.11.49.05.zarr"
     },
-    "write_results_base_dir": "/g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_intermediate_results/bug_test/",
+    "write_results_base_dir": "/g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_intermediate_results/new_neutral_files/",
     "n_workers": 48,
     "threads_per_worker": 1,
     "memory_limit": "60GB",
     "run_base_stats": true,
-    "run_quant": false,
+    "run_quant": true,
     "run_all_time": false,
     "run_neutral": true,
-    "run_la_nina": true,
+    "run_la_nina": false,
     "run_el_nino": false,
     "lat_name_dict": {
         "temp": "yt_ocean",
