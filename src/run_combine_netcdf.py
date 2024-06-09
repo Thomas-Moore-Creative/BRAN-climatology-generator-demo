@@ -58,7 +58,7 @@ def main():
         
             # Store the value in the dictionary
             results_path = '/g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_intermediate_results/'
-            files = glob.glob(results_path+'*'+var_name+'*'+phase_name+'*.nc')
+            files = glob.glob(results_path+'*_'+var_name+'_*'+phase_name+'*.nc')
             sorted_files = sorted(files, key=os.path.getctime)
             
             dynamic_ds[ds_name] = xr.open_mfdataset(files,parallel=True)  # replace with your actual value
@@ -81,7 +81,7 @@ def main():
     merged_datasets = {}
     for var_name in var_values:
             # Get all datasets with the same var_name
-            var_datasets = [dataset for ds_name, dataset in dynamic_ds.items() if var_name in ds_name]
+            var_datasets = [dataset for ds_name, dataset in dynamic_ds.items() if var_name+'_' in ds_name]
             
             # Merge the datasets along the time dimension
             merged_dataset = xr.merge(var_datasets)
@@ -140,7 +140,7 @@ def main():
 
     # run the compute and write
     timestamp_str = datetime.datetime.now().strftime("%Y.%m.%d.%H.%M.%S")
-    write_vars = ['temp','salt','u','v','mld','eta_t']
+    write_vars = ['u']
     print(">>> writing netcdf files ...")
     for write_var in write_vars:
         print(f"Writing NetCDF: {write_var}")
@@ -158,6 +158,7 @@ def main():
         # Save to NetCDF with chunking and compression encoding
         write_this.to_netcdf(write_path+write_file, engine='netcdf4',encoding=encoding)
         print(f"NetCDF written: {write_var}")
+        client.restart()
     print(">>> all done ...")
  
 if __name__ == "__main__":
