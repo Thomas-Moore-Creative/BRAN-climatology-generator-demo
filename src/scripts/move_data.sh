@@ -13,4 +13,4 @@
 #PBS -m abe
   
 #rsync -avPs /g/data/es60/users/thomas_moore/clim_demo_results/results_backup/. /g/data/xv83/users/tm4888/PROJECTS/BRAN2020/results_backup/. > ./logs/$PBS_JOBID-data-move.log 2>&1
-rsync -avPs /g/data/xv83/users/tm4888/PROJECTS/BRAN2020/BRAN2020_climatology/. /g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_GISready_results/. > ./logs/$PBS_JOBID-data-move.log 2>&1
+rsync -avPs /g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_GISready_results/. /g/data/es60/users/thomas_moore/clim_demo_results/daily/bran2020_GISready_delivery/. > ./logs/$PBS_JOBID-data-move.log 2>&1
